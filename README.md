@@ -10,6 +10,7 @@ See it in action [here](https://naturalnick.github.io/rock-paper-scissors/)
 
 <br>
 
+Screenshot:
 <image src="images/screenshot.png">
 
 ## Summary
