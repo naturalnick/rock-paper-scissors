@@ -1,38 +1,57 @@
-var wins = 0;
-var losses = 0;
+let wins = 0;
+let losses = 0;
 
-document.getElementById("rock").addEventListener("click", function() {
-  determineWinner(this.id, generateBotChoice());
-});
+const buttons = document.getElementsByClassName("btn");
+const result = document.getElementById("result");
+const choices = document.getElementById("choices");
+const scores = document.getElementById("scores");
 
-document.getElementById("paper").addEventListener("click", function() {
-  determineWinner(this.id, generateBotChoice());
-});
+for (let button of buttons) {
+  button.addEventListener("click", playGame);
+}
 
-document.getElementById("scissors").addEventListener("click", function() {
-  determineWinner(this.id, generateBotChoice());
-});
+function playGame(event) {
+  const userChoice = event.target.id;
+  const botChoice = generateBotChoice();
+  const winner = determineWinner(userChoice, botChoice);
+  updateScores(winner);
+  displayMessages(winner, userChoice, botChoice);
+}
 
 function determineWinner(userChoice, botChoice) {
-  if (userChoice === botChoice) {
-    document.getElementById("result").innerHTML = "Tie!"
-    document.getElementById("choices").innerHTML = `You both chose <u>${userChoice}</u>.`;
-  } else if ((userChoice === "rock" && botChoice === "scissors") || (userChoice === "paper" && botChoice === "rock") || userChoice === "scissors" && botChoice === "paper")  {
-    document.getElementById("result").innerHTML = "You won!";
-    document.getElementById("choices").innerHTML = `Your <u>${userChoice}</u> beat the computer's <u>${botChoice}</u>.`;
-    wins++;
-    document.getElementById("wins").innerHTML = wins;
-  } else if ((userChoice === "rock" && botChoice === "paper") || (userChoice === "paper" && botChoice === "scissors") || (userChoice === "scissors" && botChoice === "rock")) {
-    document.getElementById("result").innerHTML = "You Lost!"
-    document.getElementById("choices").innerHTML = `The computer's <u>${botChoice}</u> beat your <u>${userChoice}</u>.`;
-    losses++
-    document.getElementById("losses").innerHTML = losses;
+  if (userChoice === botChoice) return "Tie!";
+    switch (userChoice) {
+      case "rock":
+        return botChoice === "paper" ? "You lost!" : "You won!"
+        case "paper":
+          return botChoice === "scissors" ? "You lost!" : "You won!"
+        case "scissors":
+        return botChoice === "rock" ? "You lost!" : "You won!"
   }
 };
 
 function generateBotChoice() {
-  var newBotChoice = Math.floor(Math.random() * 3);
-  if (newBotChoice === 0) return "rock";
-  if (newBotChoice === 1) return "paper";
-  if (newBotChoice === 2) return "scissors";
+  const botChoices = ["rock", "paper", "scissors"];
+  const random = Math.floor(Math.random() * 3);
+  return botChoices[random];
 };
+
+function updateScores(winner) {
+  if (winner != "Tie!") return winner === "You won!" ? wins++ : losses++;
+}
+
+function displayMessages(winner, userChoice, botChoice) {
+  result.textContent = winner;
+  switch (winner) {
+    case "You won!":
+      choices.textContent = `Your ${userChoice} beat the computers ${botChoice}.`;
+      break;
+      case "You lost!":
+      choices.textContent = `The computers ${botChoice} beat your ${userChoice}.`;
+      break;
+      case "Tie!":
+      choices.textContent = `You both chose ${userChoice}.`;
+      break;
+  }
+  scores.textContent = `Wins: ${wins} - Losses ${losses}`
+}
